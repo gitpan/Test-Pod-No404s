@@ -1,0 +1,126 @@
+NAME
+    Test::Pod::No404s - Checks POD for http 404 links
+
+SYNOPSIS
+            #!/usr/bin/perl
+            use strict; use warnings;
+
+            use Test::More;
+
+            eval "use Test::Pod::No404s";
+            if ( $@ ) {
+                    plan skip_all => 'Test::Pod::No404s required for testing POD';
+            } else {
+                    all_pod_files_ok();
+            }
+
+ABSTRACT
+    Using this test module will check your POD for any http 404 links.
+
+DESCRIPTION
+    This module looks for any http(s) links in your POD and verifies that
+    they will not return a 404. It uses LWP::UserAgent for the heavy
+    lifting, and simply lets you know if it failed to retrieve the document.
+    More specifically, it uses $response->is_error as the "test."
+
+    Normally, you wouldn't want this test to be run during end-user
+    installation because they might have no internet! It is HIGHLY
+    recommended that this be used only for module authors' RELEASE_TESTING
+    phase. To do that, just modify the synopsis to add an env check :)
+
+Methods
+  all_pod_files_ok( [ @files ] )
+    This function is what you will usually run. It automatically finds any
+    POD in your distribution and runs checks on them.
+
+    Accepts an optional argument: an array of files to check. By default it
+    checks all POD files it can find in the distribution. Every file it
+    finds is passed to the "pod_file_ok" function.
+
+  pod_file_ok( FILENAME, [ TESTNAME ] )
+    "pod_file_ok()" will okay the test if there is no http(s) links present
+    in the POD or if all links are not an error. Furthermore, if the POD was
+    malformed as reported by Pod::Simple, the test will fail and not attempt
+    to check the links.
+
+    When it fails, "pod_file_ok()" will show any failing links as
+    diagnostics.
+
+    The optional second argument TESTNAME is the name of the test. If it is
+    omitted, "pod_file_ok()" chooses a default test name "404 test for
+    FILENAME".
+
+EXPORT
+    Automatically exports the two subs.
+
+SEE ALSO
+    LWP::UserAgent
+
+    Pod::Simple
+
+    Test::Pod
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+        perldoc Test::Pod::No404s
+
+  Websites
+    *   Search CPAN
+
+        <http://search.cpan.org/dist/Test-Pod-No404s>
+
+    *   AnnoCPAN: Annotated CPAN documentation
+
+        <http://annocpan.org/dist/Test-Pod-No404s>
+
+    *   CPAN Ratings
+
+        <http://cpanratings.perl.org/d/Test-Pod-No404s>
+
+    *   CPAN Forum
+
+        <http://cpanforum.com/dist/Test-Pod-No404s>
+
+    *   RT: CPAN's Request Tracker
+
+        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=Test-Pod-No404s>
+
+    *   CPANTS Kwalitee
+
+        <http://cpants.perl.org/dist/overview/Test-Pod-No404s>
+
+    *   CPAN Testers Results
+
+        <http://cpantesters.org/distro/T/Test-Pod-No404s.html>
+
+    *   CPAN Testers Matrix
+
+        <http://matrix.cpantesters.org/?dist=Test-Pod-No404s>
+
+    *   Git Source Code Repository
+
+        <http://github.com/apocalypse/perl-test-pod-no404s>
+
+  Bugs
+    Please report any bugs or feature requests to "bug-test-pod-no404s at
+    rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Test-Pod-No404s>. I will
+    be notified, and then you'll automatically be notified of progress on
+    your bug as I make changes.
+
+AUTHOR
+    Apocalypse <apocal@cpan.org>
+
+    Thanks to the author of Test::Pod for the basic framework of this
+    module!
+
+    Thanks to the POE guys for finding 404 links in their POD, and was the
+    inspiration for this module.
+
+COPYRIGHT AND LICENSE
+    Copyright 2010 by Apocalypse
+
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+

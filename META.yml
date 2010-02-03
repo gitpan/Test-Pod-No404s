@@ -1,0 +1,30 @@
+---
+abstract: 'Checks POD for http 404 links'
+author:
+  - 'Apocalypse <APOCAL@cpan.org>'
+configure_requires:
+  Module::Build: 0.36
+dynamic_config: 0
+generated_by: 'Module::Build version 0.3601'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Test-Pod-No404s
+provides:
+  Test::Pod::No404s:
+    file: lib/Test/Pod/No404s.pm
+    version: 0.01
+requires:
+  LWP::UserAgent: 5.834
+  Pod::Simple::Text: 3.13
+  Test::Builder: 0.94
+  Test::Pod: 1.40
+  URI::Find: 20090319
+  perl: 5.008
+resources:
+  bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Test-Pod-No404s
+  homepage: http://search.cpan.org/dist/Test-Pod-No404s
+  license: http://dev.perl.org/licenses/
+  repository: http://github.com/apocalypse/perl-test-pod-no404s
+version: 0.01

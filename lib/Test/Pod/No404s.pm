@@ -23,6 +23,7 @@ use Test::Pod ();
 # setup our tests and etc
 use Test::Builder;
 my $Test = Test::Builder->new;
+my %ignore_urls;
 
 # auto-export our 2 subs
 use parent qw( Exporter );
@@ -80,6 +81,8 @@ sub pod_file_ok {
 		return 0;
 	}
 
+	_load_ignore_urls();
+
 	# Did we see POD in the file?
 	if ( $parser->doc_has_started ) {
 		my @links;
@@ -101,6 +104,11 @@ sub pod_file_ok {
 			my @errors;
 			my $ua = LWP::UserAgent->new;
 			foreach my $l ( @links ) {
+				if ( $ignore_urls{$l->[0]} ) {
+					$Test->diag( "Ignoring $l->[0]" );
+					next;
+				}
+
 				$Test->diag( "Checking $l->[0]" );
 				my $response = $ua->head( $l->[0] );
 				if ( $response->is_error ) {
@@ -121,6 +129,30 @@ sub pod_file_ok {
 	}
 
 	return 1;
+}
+
+sub _load_ignore_urls {
+	return if ( %ignore_urls );
+
+	# Put a dummy item in %ignore_urls to not try to keep loading it over and over.
+	my $dummy = q{#};
+	$ignore_urls{ $dummy } = 1;
+
+	my $config = '.no404s-ignore';
+	$Test->diag( "Trying to load ignore URLs from $config" );
+	if ( -f $config ) {
+		open(my $F, '<', $config) or do {
+			$Test->diag( "Error reading $config: $!" );
+			return;
+		};
+		foreach my $line ( <$F> ) {
+			$line =~ s/^\s+//xms;
+			$line =~ s/\s+$//xms;
+			$ignore_urls{ $line } = 1;
+		}
+		close $F;
+	}
+	return;
 }
 
 #pod =method all_pod_files_ok
@@ -222,6 +254,12 @@ Please see those modules/websites for more information related to this module.
 L<Test::Pod::LinkCheck|Test::Pod::LinkCheck>
 
 =back
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+A file named F<.no404-ignore> in the current directory will be read as a list of URLs to ignore. Each URL must be on its own line. Leading and trailing whitespace on these URLs is ignored.
+
+To temporary disable URLs from the F<.no404s-ignore> add e.g., a C<#> in front of the line. The C<#> does not have a special meaning but it changes the URL's protocol to be unknown and hence not checked.
 
 =head1 SUPPORT
 
